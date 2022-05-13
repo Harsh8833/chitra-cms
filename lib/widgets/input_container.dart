@@ -1,18 +1,22 @@
 import 'package:chitra/values/colors.dart';
+import 'package:chitra/values/dimens.dart';
 import 'package:flutter/material.dart';
 
 class InputContainer extends StatelessWidget {
   final Widget child;
-  const InputContainer({Key? key, required this.child}) : super(key: key);
+  final double width;
+  const InputContainer({Key? key, required this.child, required this.width})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 500,
+      width: width,
+      margin: const EdgeInsets.symmetric(horizontal: 10),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Appcolor.light,
-        borderRadius: BorderRadius.circular(15),
+        color: Appcolor.white,
+        borderRadius: BorderRadius.circular(AppDimens.borderRadius),
         border: Border.all(color: Appcolor.primary),
       ),
       child: child,

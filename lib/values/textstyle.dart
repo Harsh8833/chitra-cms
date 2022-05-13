@@ -3,6 +3,6 @@ import 'package:flutter/cupertino.dart';
 
 const headingPrimary = TextStyle(
   fontSize: 50,
-  fontWeight: FontWeight.bold,
-  color: Appcolor.primary,
+  fontWeight: FontWeight.normal,
+  color: Appcolor.dark,
 );
