@@ -1,13 +1,16 @@
 import 'dart:developer';
 
 import 'package:chitra/connection.dart';
+import 'package:chitra/models/invoice_model.dart';
 import 'package:chitra/values/colors.dart';
 import 'package:chitra/values/textstyle.dart';
 import 'package:chitra/widgets/buttons.dart';
 import 'package:chitra/widgets/input_container.dart';
+import 'package:chitra/widgets/invoice_input_container.dart';
 import 'package:chitra/widgets/table/header.dart';
 import 'package:chitra/widgets/table/invoice_items.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 
 class GenerateInvoicePage extends StatefulWidget {
@@ -20,7 +23,6 @@ class GenerateInvoicePage extends StatefulWidget {
 class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
   late mongo.Db database;
   late mongo.DbCollection inventory;
-  var invoiceItem = [];
 
   void initState() {
     database = mongo.Db('mongodb://localhost/chitra-cms');
@@ -163,55 +165,104 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
             ),
             const Divider(),
             tableHeaders(),
-            const InvoiceItem(
-              code: 'S101',
-              name: "Test",
-              type: "Saree",
-              price: "5600",
-              qty: '1',
-              total: "5600",
-            )
+            for (var each in invoiceItem) ...[
+              InvoiceItem(
+                code: each['code'],
+                name: each['name'],
+                type: each['type'],
+                qty: '1',
+                price: each['mrp'].toString(),
+                total: each['mrp'].toString(),
+              )
+            ]
           ],
         ),
       ),
     );
   }
 
-  Future openItemWithId() => showDialog(
+  removeInvoiceItem(item) {
+    log('clicked -- ');
+  }
+
+  Future openItemWithId() {
+    final TextEditingController _itemCode = TextEditingController();
+    _itemCode.text = '';
+    return showDialog(
       context: context,
       builder: (context) => Dialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          child: Container(
-            height: 250,
-            width: 500,
-            decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.circular(20),
-              color: Appcolor.gray,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Container(
+          height: 250,
+          width: 500,
+          decoration: BoxDecoration(
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(20),
+            color: Appcolor.gray,
+          ),
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            const Padding(
+              padding: EdgeInsets.all(15.0),
+              child: Text(
+                "Add Item with Id",
+                style: headingSecondary,
+              ),
             ),
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const Padding(
-                padding: EdgeInsets.all(15.0),
-                child: Text(
-                  "Add Item with Id",
-                  style: headingSecondary,
-                ),
+            InputContainer(
+              width: 400,
+              child: TextField(
+                textInputAction: TextInputAction.go,
+                onSubmitted: (value) async {
+                  log('clicked');
+                  log(_itemCode.text);
+                  var item = await inventory.findOne({'code': _itemCode.text});
+                  if (item != null) {
+                    setState(() {
+                      invoiceItem.add(item);
+                    });
+
+                    Navigator.of(context).pop();
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text(
+                      "Item code Not Found!",
+                      style: TextStyle(fontSize: 22),
+                    )));
+                  }
+                },
+                textCapitalization: TextCapitalization.words,
+                controller: _itemCode,
+                decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    labelText: "Code",
+                    floatingLabelStyle: TextStyle(color: Appcolor.primary)),
               ),
-              const InputContainer(
-                width: 400,
-                child: TextField(
-                  textCapitalization: TextCapitalization.words,
-                  decoration: InputDecoration(
-                      border: InputBorder.none,
-                      labelText: "Code",
-                      floatingLabelStyle:
-                          const TextStyle(color: Appcolor.primary)),
-                ),
-              ),
-              AppPrimaryButton(
-                  onTap: () async {}, text: "ADD", horizontalPadding: 20)
-            ]),
-          )));
+            ),
+            AppPrimaryButton(
+              onTap: () async {
+                log('clicked');
+                log(_itemCode.text);
+                var item = await inventory.findOne({'code': _itemCode.text});
+                if (item != null) {
+                  setState(() {
+                    invoiceItem.add(item);
+                  });
+
+                  Navigator.of(context).pop();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text(
+                    "Item code Not Found!",
+                    style: TextStyle(fontSize: 22),
+                  )));
+                }
+              },
+              text: "ADD",
+              horizontalPadding: 20,
+            )
+          ]),
+        ),
+      ),
+    );
+  }
 }

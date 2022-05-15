@@ -38,6 +38,7 @@ dependencies:
   firedart: ^0.9.0+1
   custom_radio_grouped_button: ^2.1.2
   mongo_dart: ^0.7.4+1
+  fluttertoast: ^8.0.9
 
 dev_dependencies:
   flutter_test:

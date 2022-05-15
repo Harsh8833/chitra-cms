@@ -43,6 +43,9 @@ Row tableHeaders() {
       TableHeader(width: 140, text: "Qty"),
       TableHeader(width: 150, text: "Price"),
       TableHeader(width: 170, text: "Total"),
+      SizedBox(
+        width: 50,
+      )
     ],
   );
 }
