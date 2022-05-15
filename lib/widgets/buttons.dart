@@ -5,8 +5,13 @@ import 'package:flutter/material.dart';
 class AppPrimaryButton extends StatelessWidget {
   final onTap;
   final text;
-  const AppPrimaryButton({Key? key, required this.onTap, required this.text})
-      : super(key: key);
+  final double horizontalPadding;
+  const AppPrimaryButton({
+    Key? key,
+    required this.onTap,
+    required this.text,
+    required this.horizontalPadding,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +22,7 @@ class AppPrimaryButton extends StatelessWidget {
         height: 50,
         color: Appcolor.button,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
           child: Text(
             text,
             style: const TextStyle(
@@ -36,12 +41,12 @@ class AppPrimaryButton extends StatelessWidget {
 
 class AppRoundButton extends StatelessWidget {
   final Function()? onTap;
-  final Widget child;
+  final IconData icon;
   final double height;
   const AppRoundButton({
     Key? key,
     required this.onTap,
-    required this.child,
+    required this.icon,
     required this.height,
   }) : super(key: key);
 
@@ -52,7 +57,10 @@ class AppRoundButton extends StatelessWidget {
       shape: const CircleBorder(),
       height: height,
       color: Appcolor.button,
-      child: child,
+      child: Icon(
+        icon,
+        color: Appcolor.white,
+      ),
     );
   }
 }

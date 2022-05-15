@@ -4,6 +4,7 @@ import 'package:chitra/pages/inventory_page.dart';
 import 'package:chitra/pages/generate_invoice.dart';
 import 'package:chitra/values/colors.dart';
 import 'package:collapsible_sidebar/collapsible_sidebar.dart';
+import 'package:firedart/firedart.dart';
 import 'package:flutter/material.dart';
 
 class SidebarPage extends StatefulWidget {

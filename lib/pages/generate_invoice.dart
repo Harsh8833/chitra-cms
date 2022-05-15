@@ -1,13 +1,37 @@
-import 'dart:ui';
+import 'dart:developer';
 
+import 'package:chitra/connection.dart';
 import 'package:chitra/values/colors.dart';
 import 'package:chitra/values/textstyle.dart';
 import 'package:chitra/widgets/buttons.dart';
 import 'package:chitra/widgets/input_container.dart';
+import 'package:chitra/widgets/table/header.dart';
+import 'package:chitra/widgets/table/invoice_items.dart';
 import 'package:flutter/material.dart';
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
 
-class GenerateInvoicePage extends StatelessWidget {
+class GenerateInvoicePage extends StatefulWidget {
   const GenerateInvoicePage({Key? key}) : super(key: key);
+
+  @override
+  State<GenerateInvoicePage> createState() => _GenerateInvoicePageState();
+}
+
+class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
+  late mongo.Db database;
+  late mongo.DbCollection inventory;
+  var invoiceItem = [];
+
+  void initState() {
+    database = mongo.Db('mongodb://localhost/chitra-cms');
+    Future.delayed(Duration.zero, () async {
+      log("connection started");
+      await database.open();
+      inventory = database.collection('inventory');
+      log("connected");
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +41,31 @@ class GenerateInvoicePage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 30),
         child: ListView(
           children: [
-            const Text(
-              "CHITRA FASHION",
-              style: headingPrimary,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "CHITRA FASHION",
+                  style: headingPrimary,
+                ),
+                Row(
+                  children: [
+                    const SizedBox(
+                      width: 250,
+                      child: TextField(
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "Grand Total",
+                            hoverColor: Appcolor.primary),
+                      ),
+                    ),
+                    AppPrimaryButton(
+                        onTap: () {},
+                        text: "Generate Bill",
+                        horizontalPadding: 50)
+                  ],
+                )
+              ],
             ),
             const Divider(),
             const SizedBox(
@@ -58,12 +104,12 @@ class GenerateInvoicePage extends StatelessWidget {
                 AppRoundButton(
                   onTap: () {},
                   height: 60,
-                  child: const Icon(Icons.arrow_forward),
+                  icon: Icons.arrow_forward,
                 ),
                 AppRoundButton(
                   onTap: () {},
                   height: 60,
-                  child: const Icon(Icons.visibility),
+                  icon: Icons.visibility,
                 )
               ],
             ),
@@ -72,20 +118,100 @@ class GenerateInvoicePage extends StatelessWidget {
             ),
             const Divider(),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AppPrimaryButton(
-                  onTap: () {},
-                  text: "Add with id",
+                Row(
+                  children: [
+                    AppPrimaryButton(
+                      onTap: () {
+                        openItemWithId();
+                      },
+                      text: "Add with id",
+                      horizontalPadding: 8,
+                    ),
+                    AppPrimaryButton(
+                      onTap: () {},
+                      text: "Add without id",
+                      horizontalPadding: 8,
+                    )
+                  ],
                 ),
-                AppPrimaryButton(
-                  onTap: () {},
-                  text: "Add without id",
-                )
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: const [
+                          Text("Invoice No: "),
+                          Text("s1"),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Text("Date: "),
+                          Text(DateTime.now().day.toString() +
+                              "/" +
+                              DateTime.now().month.toString() +
+                              "/" +
+                              DateTime.now().year.toString()),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
               ],
+            ),
+            const Divider(),
+            tableHeaders(),
+            const InvoiceItem(
+              code: 'S101',
+              name: "Test",
+              type: "Saree",
+              price: "5600",
+              qty: '1',
+              total: "5600",
             )
           ],
         ),
       ),
     );
   }
+
+  Future openItemWithId() => showDialog(
+      context: context,
+      builder: (context) => Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: Container(
+            height: 250,
+            width: 500,
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(20),
+              color: Appcolor.gray,
+            ),
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              const Padding(
+                padding: EdgeInsets.all(15.0),
+                child: Text(
+                  "Add Item with Id",
+                  style: headingSecondary,
+                ),
+              ),
+              const InputContainer(
+                width: 400,
+                child: TextField(
+                  textCapitalization: TextCapitalization.words,
+                  decoration: InputDecoration(
+                      border: InputBorder.none,
+                      labelText: "Code",
+                      floatingLabelStyle:
+                          const TextStyle(color: Appcolor.primary)),
+                ),
+              ),
+              AppPrimaryButton(
+                  onTap: () async {}, text: "ADD", horizontalPadding: 20)
+            ]),
+          )));
 }
