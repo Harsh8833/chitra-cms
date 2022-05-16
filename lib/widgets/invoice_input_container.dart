@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 class InvoiceInputFeild extends StatelessWidget {
   final double width;
   final TextAlign textAlign;
+  final onChanged;
   final TextEditingController? controller;
   const InvoiceInputFeild(
       {Key? key,
       required this.width,
       this.controller,
-      this.textAlign = TextAlign.center})
+      this.textAlign = TextAlign.center,
+      this.onChanged})
       : super(key: key);
 
   @override
@@ -29,6 +31,7 @@ class InvoiceInputFeild extends StatelessWidget {
           border: InputBorder.none,
         ),
         textAlign: textAlign,
+        onChanged: onChanged,
       ),
     );
   }

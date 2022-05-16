@@ -39,6 +39,10 @@ dependencies:
   custom_radio_grouped_button: ^2.1.2
   mongo_dart: ^0.7.4+1
   fluttertoast: ^8.0.9
+  pdf: ^3.8.0
+  path_provider: ^2.0.10
+  open_document: ^1.0.4
+  printing: ^5.9.0
 
 dev_dependencies:
   flutter_test:

@@ -56,33 +56,35 @@ class _SidebarPageState extends State<SidebarPage> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return SafeArea(
-      child: CollapsibleSidebar(
-        avatarImg: _avatarImg,
-        isCollapsed: true,
-        items: _items,
-        title: 'Chitra Fashion',
-        body: _body,
-        topPadding: 150,
-        backgroundColor: Appcolor.primary,
-        selectedIconColor: Appcolor.dark,
-        selectedIconBox: Appcolor.secondary,
-        selectedTextColor: Appcolor.black,
-        unselectedIconColor: Appcolor.light,
-        textStyle: const TextStyle(fontSize: 15, fontStyle: FontStyle.italic),
-        titleStyle: const TextStyle(
-            fontSize: 20,
-            fontStyle: FontStyle.italic,
-            fontWeight: FontWeight.bold),
-        toggleTitleStyle:
-            const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        sidebarBoxShadow: [
-          BoxShadow(
-            color: Appcolor.primary.withOpacity(0.1),
-            blurRadius: 20,
-            spreadRadius: 0.01,
-            offset: const Offset(3, 3),
-          ),
-        ],
+      child: Scaffold(
+        body: CollapsibleSidebar(
+          avatarImg: _avatarImg,
+          isCollapsed: true,
+          items: _items,
+          title: 'Chitra Fashion',
+          body: _body,
+          topPadding: 150,
+          backgroundColor: Appcolor.primary,
+          selectedIconColor: Appcolor.dark,
+          selectedIconBox: Appcolor.secondary,
+          selectedTextColor: Appcolor.black,
+          unselectedIconColor: Appcolor.light,
+          textStyle: const TextStyle(fontSize: 15, fontStyle: FontStyle.italic),
+          titleStyle: const TextStyle(
+              fontSize: 20,
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.bold),
+          toggleTitleStyle:
+              const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          sidebarBoxShadow: [
+            BoxShadow(
+              color: Appcolor.primary.withOpacity(0.1),
+              blurRadius: 20,
+              spreadRadius: 0.01,
+              offset: const Offset(3, 3),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -14,6 +14,10 @@ class InvoiceItem extends StatefulWidget {
   final String price;
   final String total;
   final item;
+  final onRemove;
+  final onAdd;
+  final onInc;
+  final onDec;
   const InvoiceItem(
       {Key? key,
       required this.code,
@@ -22,6 +26,10 @@ class InvoiceItem extends StatefulWidget {
       required this.qty,
       required this.price,
       required this.total,
+      required this.onRemove,
+      required this.onAdd,
+      required this.onInc,
+      required this.onDec,
       this.item})
       : super(key: key);
 
@@ -45,6 +53,7 @@ class _InvoiceItemState extends State<InvoiceItem> {
     _qtyController.text = widget.qty;
     _priceController.text = widget.price;
     _totalController.text = widget.total;
+    widget.onAdd();
     super.initState();
   }
 
@@ -75,11 +84,14 @@ class _InvoiceItemState extends State<InvoiceItem> {
                 padding: const EdgeInsets.all(0),
                 minWidth: 35,
                 onPressed: () {
+                  widget.onDec();
                   setState(() {
                     var intQty = int.parse(_qtyController.text);
                     intQty--;
                     print(intQty);
                     _qtyController.text = intQty.toString();
+                    _totalController.text =
+                        (int.parse(_priceController.text) * intQty).toString();
                   });
                 },
                 shape: const CircleBorder(),
@@ -98,11 +110,14 @@ class _InvoiceItemState extends State<InvoiceItem> {
                 padding: const EdgeInsets.all(0),
                 minWidth: 35,
                 onPressed: () {
+                  widget.onInc();
                   setState(() {
                     var intQty = int.parse(_qtyController.text);
                     intQty++;
                     print(intQty);
                     _qtyController.text = intQty.toString();
+                    _totalController.text =
+                        (int.parse(_priceController.text) * intQty).toString();
                   });
                 },
                 shape: const CircleBorder(),
@@ -130,15 +145,7 @@ class _InvoiceItemState extends State<InvoiceItem> {
           child: IconButton(
             hoverColor: Colors.redAccent,
             splashRadius: 12,
-            onPressed: () {
-              setState(() {
-                log('Before');
-                print(invoiceItem);
-                invoiceItem.removeAt(0);
-                log('After');
-                print(invoiceItem);
-              });
-            },
+            onPressed: widget.onRemove,
             icon: const Icon(
               Icons.remove_circle_outline,
               color: Colors.black,
