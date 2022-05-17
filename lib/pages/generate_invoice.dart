@@ -83,7 +83,7 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
                             'date': CurrentInvoice.date,
                             'cname': CurrentInvoice.name,
                             'phone': CurrentInvoice.phone,
-                            'gt': CurrentInvoice.gTotal,
+                            'gt': _grandTotal,
                             'qty': CurrentInvoice.invoiceQty(),
                             'items': CurrentInvoice.items
                           });
@@ -266,6 +266,7 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
     setState(() {
       _grandTotal.text = "₹" + CurrentInvoice.calGT().toString();
     });
+    log('updateGT');
   }
 
   onQtyInc(i) {
@@ -325,12 +326,11 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
               child: TextField(
                 textInputAction: TextInputAction.go,
                 onSubmitted: (value) async {
-                  log('clicked');
-                  log(_itemCode.text);
                   var item = await inventory.findOne({'code': _itemCode.text});
                   if (item != null) {
                     setState(() {
                       invoiceItem.add(item);
+                      updateGT();
                     });
 
                     Navigator.of(context).pop();
@@ -342,7 +342,6 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
                     )));
                   }
                 },
-                textCapitalization: TextCapitalization.words,
                 controller: _itemCode,
                 decoration: const InputDecoration(
                     border: InputBorder.none,
@@ -352,12 +351,12 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
             ),
             AppPrimaryButton(
               onTap: () async {
-                log('clicked');
                 log(_itemCode.text);
                 var item = await inventory.findOne({'code': _itemCode.text});
                 if (item != null) {
                   setState(() {
                     invoiceItem.add(item);
+                    updateGT();
                   });
                   Navigator.of(context).pop();
                 } else {
@@ -444,8 +443,6 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
                             'type': _type.text,
                             'qty': 1,
                           });
-
-                          updateGT();
                           reload();
                           print(invoiceItem);
                         },
@@ -461,7 +458,6 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
                             'qty': 1,
                           });
                           reload();
-                          updateGT();
                           print(invoiceItem);
                         },
                         text: "ADD",

@@ -37,6 +37,7 @@ class PrintInvoice extends StatelessWidget {
         ),
         body: PdfPreview(
           build: (format) => _generatePdf(format, title),
+          padding: EdgeInsets.symmetric(horizontal: 300),
         ),
       ),
     );
@@ -50,75 +51,81 @@ class PrintInvoice extends StatelessWidget {
       pw.Page(
         pageFormat: format,
         build: (context) {
-          return pw.Column(
-            children: [
-              pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  children: [
-                    pw.Text('Invoice No: ' + data.invoiceNo.toString()),
-                    pw.Column(
-                        crossAxisAlignment: pw.CrossAxisAlignment.end,
-                        children: [
-                          pw.Text('Phone- 7004647426'),
-                          pw.Text('8102462045'),
-                        ])
+          return pw.Padding(
+              padding: const pw.EdgeInsets.all(20),
+              child: pw.Column(
+                children: [
+                  pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                      children: [
+                        pw.Text('Invoice No: ' + data.invoiceNo.toString()),
+                        pw.Column(
+                            crossAxisAlignment: pw.CrossAxisAlignment.end,
+                            children: [
+                              pw.Text('Phone- 7004647426'),
+                              pw.Text('8102462045'),
+                            ])
+                      ]),
+                  pw.SizedBox(
+                    width: 100,
+                    child: pw.FittedBox(
+                      child: pw.Text("JAI JAGDAMBE",
+                          style: pw.TextStyle(font: font)),
+                    ),
+                  ),
+                  pw.SizedBox(
+                    width: double.infinity,
+                    child: pw.FittedBox(
+                      child: pw.Text("CHITRA FASHION",
+                          style: pw.TextStyle(font: font)),
+                    ),
+                  ),
+                  pw.Divider(),
+                  pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                      children: [
+                        pw.Text('Invoice No: ' + data.invoiceNo.toString()),
+                        pw.Text('Date: ' + data.date),
+                      ]),
+                  pw.Row(children: [
+                    pw.Text('Customer Name: '),
+                    pw.Text(data.name),
                   ]),
-              pw.SizedBox(
-                width: 100,
-                child: pw.FittedBox(
-                  child:
-                      pw.Text("JAI JAGDAMBE", style: pw.TextStyle(font: font)),
-                ),
-              ),
-              pw.SizedBox(
-                width: double.infinity,
-                child: pw.FittedBox(
-                  child: pw.Text("CHITRA FASHION",
-                      style: pw.TextStyle(font: font)),
-                ),
-              ),
-              pw.Divider(),
-              pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  children: [
-                    pw.Text('Invoice No: ' + data.invoiceNo.toString()),
-                    pw.Text('Date: ' + data.date),
+                  pw.Row(children: [
+                    pw.Text('Customer Phone: '),
+                    pw.Text(data.phone),
                   ]),
-              pw.Row(children: [
-                pw.Text('Customer Name: '),
-                pw.Text(data.name),
-              ]),
-              pw.Row(children: [
-                pw.Text('Customer Phone: '),
-                pw.Text(data.phone),
-              ]),
-              pw.Divider(),
-              pw.SizedBox(
-                width: 50,
-                child: pw.FittedBox(
-                  child: pw.Text("INVOICE"),
-                ),
-              ),
-              pw.Divider(),
-              pdfTableHeader(),
-              pw.Divider(),
-              for (var each in data.items) ...[
-                pdfTableBody(each),
-              ],
-              pw.Divider(),
-              pw.Row(mainAxisAlignment: pw.MainAxisAlignment.end, children: [
-                pw.Text('GRAND TOTAL',
-                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                pw.SizedBox(
-                  width: 100,
-                  child: pw.Text(data.gTotal.toString(),
-                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-                      textAlign: pw.TextAlign.center),
-                )
-              ]),
-              pw.Divider()
-            ],
-          );
+                  pw.Divider(),
+                  pw.SizedBox(
+                    width: 50,
+                    child: pw.FittedBox(
+                      child: pw.Text("INVOICE"),
+                    ),
+                  ),
+                  pw.Divider(),
+                  pdfTableHeader(),
+                  pw.Divider(),
+                  for (var each in data.items) ...[
+                    pdfTableBody(each),
+                  ],
+                  pw.Divider(),
+                  pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.end,
+                      children: [
+                        pw.Text('GRAND TOTAL',
+                            style:
+                                pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                        pw.SizedBox(
+                          width: 100,
+                          child: pw.Text(data.gTotal.toString(),
+                              style:
+                                  pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                              textAlign: pw.TextAlign.center),
+                        )
+                      ]),
+                  pw.Divider()
+                ],
+              ));
         },
       ),
     );
