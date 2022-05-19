@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:chitra/models/invoice_model.dart';
 import 'package:chitra/pdf_api.dart';
 import 'package:chitra/values/colors.dart';
+import 'package:chitra/values/dimens.dart';
 import 'package:chitra/values/textstyle.dart';
 import 'package:chitra/widgets/buttons.dart';
 import 'package:chitra/widgets/input_container.dart';
@@ -9,7 +10,11 @@ import 'package:chitra/widgets/sidebar.dart';
 import 'package:chitra/widgets/table/header.dart';
 import 'package:chitra/widgets/table/invoice_items.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
+
+final inrFormat = NumberFormat.currency(
+    name: "INR", locale: 'en_IN', decimalDigits: 2, symbol: '₹');
 
 class GenerateInvoicePage extends StatefulWidget {
   const GenerateInvoicePage({Key? key}) : super(key: key);
@@ -64,34 +69,47 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
                     SizedBox(
                       width: 250,
                       child: TextField(
+                        style: const TextStyle(
+                            color: Appcolor.button,
+                            fontSize: 19,
+                            fontWeight: FontWeight.bold),
                         controller: _grandTotal,
-                        decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: "Grand Total",
-                            hoverColor: Appcolor.primary),
+                        decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: Appcolor.primary, width: 2),
+                                borderRadius: BorderRadius.circular(
+                                    AppDimens.borderRadius)),
+                            labelText: 'Grand Total',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(
+                                    AppDimens.borderRadius))),
                       ),
                     ),
                     AppPrimaryButton(
-                        onTap: () {
+                        onTap: () async {
+                          log("Generate Invoice Started");
                           log(CurrentInvoice.name);
                           log(CurrentInvoice.phone);
                           log(CurrentInvoice.date);
                           print(CurrentInvoice.items);
-                          CurrentInvoice.calGT();
+                          print(CurrentInvoice.calGT());
                           invoices.insertOne({
                             'invno': invono,
                             'date': CurrentInvoice.date,
                             'cname': CurrentInvoice.name,
                             'phone': CurrentInvoice.phone,
-                            'gt': _grandTotal,
+                            'gt': _grandTotal.text,
                             'qty': CurrentInvoice.invoiceQty(),
                             'items': CurrentInvoice.items
                           });
+                          var i = await getInvoiceNo();
+                          // log('Generated');
                           setState(() {
-                            CurrentInvoice.reset();
+                            invono = i;
                             CurrentInvoice.items = [];
-                            grandTotal = 0;
-                            reload();
+                            invoiceItem = [];
+                            _grandTotal.text = "";
                           });
                         },
                         text: "Generate Bill",
@@ -264,9 +282,8 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
 
   updateGT() {
     setState(() {
-      _grandTotal.text = "₹" + CurrentInvoice.calGT().toString();
+      _grandTotal.text = inrFormat.format(CurrentInvoice.calGT());
     });
-    log('updateGT');
   }
 
   onQtyInc(i) {
@@ -330,10 +347,10 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
                   if (item != null) {
                     setState(() {
                       invoiceItem.add(item);
-                      updateGT();
                     });
 
                     Navigator.of(context).pop();
+                    reload();
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text(
@@ -356,7 +373,6 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
                 if (item != null) {
                   setState(() {
                     invoiceItem.add(item);
-                    updateGT();
                   });
                   Navigator.of(context).pop();
                 } else {
@@ -439,7 +455,7 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
                           invoiceItem.add({
                             'code': 'N/A',
                             'name': _name.text,
-                            'mrp': _mrp.text,
+                            'mrp': int.parse(_mrp.text),
                             'type': _type.text,
                             'qty': 1,
                           });
@@ -453,7 +469,7 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
                           invoiceItem.add({
                             'code': 'N/A',
                             'name': _name.text,
-                            'mrp': _mrp.text,
+                            'mrp': int.parse(_mrp.text),
                             'type': _type.text,
                             'qty': 1,
                           });

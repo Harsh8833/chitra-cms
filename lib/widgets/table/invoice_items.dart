@@ -151,7 +151,7 @@ class _InvoiceItemState extends State<InvoiceItem> {
               color: Colors.black,
             ),
           ),
-        )
+        ),
       ],
     );
   }

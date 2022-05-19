@@ -35,13 +35,6 @@ class Invoice {
     return qty;
   }
 
-  void reset() {
-    name = "Chitra's Customer";
-    phone = 'N/A';
-    gTotal = 0;
-    items = [];
-  }
-
   Invoice(
       {this.name = "Chitra's Customer",
       this.phone = "N/A",

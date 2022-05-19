@@ -14,7 +14,8 @@ class HistoryPage extends StatelessWidget {
             Text(
               "History Page",
               style: headingPrimary,
-            )
+            ),
+            Divider()
           ],
         ),
       ),
