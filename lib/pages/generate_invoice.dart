@@ -9,6 +9,7 @@ import 'package:chitra/widgets/input_container.dart';
 import 'package:chitra/widgets/sidebar.dart';
 import 'package:chitra/widgets/table/header.dart';
 import 'package:chitra/widgets/table/invoice_items.dart';
+import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
@@ -54,7 +55,7 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
     final totalwidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30),
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: ListView(
           children: [
             Row(
@@ -110,6 +111,8 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
                             CurrentInvoice.items = [];
                             invoiceItem = [];
                             _grandTotal.text = "";
+                            _customerName.text = "";
+                            _customerPhone.text = "";
                           });
                         },
                         text: "Generate Bill",
@@ -125,15 +128,15 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                InputContainer(
-                  width: totalwidth * 0.11,
-                  child: const TextField(
-                    decoration: InputDecoration(
-                        border: InputBorder.none,
-                        labelText: "Customer No.",
-                        floatingLabelStyle: TextStyle(color: Appcolor.primary)),
-                  ),
-                ),
+                // InputContainer(
+                //   width: totalwidth * 0.11,
+                //   child: const TextField(
+                //     decoration: InputDecoration(
+                //         border: InputBorder.none,
+                //         labelText: "Customer No.",
+                //         floatingLabelStyle: TextStyle(color: Appcolor.primary)),
+                //   ),
+                // ),
                 InputContainer(
                   width: totalwidth * 0.3,
                   child: TextField(
@@ -394,7 +397,6 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
 
   Future openItemWithoutId() {
     final TextEditingController _name = TextEditingController();
-    final TextEditingController _type = TextEditingController();
     final TextEditingController _mrp = TextEditingController();
     return showDialog(
         context: context,
@@ -402,7 +404,7 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             child: Container(
-              height: 350,
+              height: 450,
               width: 500,
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
@@ -419,6 +421,46 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
                         style: headingSecondary,
                       ),
                     ),
+                    CustomRadioButton(
+                      enableButtonWrap: true,
+                      buttonValues: const [
+                        'Lehenga',
+                        'Suit',
+                        'Saree',
+                        'Gown',
+                        'Crop Top',
+                        'Kurti',
+                        'Plazzo',
+                        'Blouse',
+                        'Dupatta',
+                        'Jeans',
+                        'Skirt',
+                        'Others'
+                      ],
+                      buttonLables: const [
+                        'Lehenga',
+                        'Suit',
+                        'Saree',
+                        'Gown',
+                        'Crop Top',
+                        'Kurti',
+                        'Plazzo',
+                        'Blouse',
+                        'Dupatta',
+                        'Jeans',
+                        'Skirt',
+                        'Others'
+                      ],
+                      radioButtonValue: (values) {
+                        _name.text = values.toString();
+                      },
+                      selectedColor: Appcolor.primary,
+                      unSelectedColor: Appcolor.white,
+                      selectedBorderColor: Appcolor.primary,
+                      unSelectedBorderColor: Appcolor.primary,
+                      elevation: 0,
+                      enableShape: true,
+                    ),
                     InputContainer(
                       width: 400,
                       child: TextField(
@@ -426,17 +468,6 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
                         decoration: const InputDecoration(
                             border: InputBorder.none,
                             labelText: "Item Name",
-                            floatingLabelStyle:
-                                TextStyle(color: Appcolor.primary)),
-                      ),
-                    ),
-                    InputContainer(
-                      width: 400,
-                      child: TextField(
-                        controller: _type,
-                        decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            labelText: "Type",
                             floatingLabelStyle:
                                 TextStyle(color: Appcolor.primary)),
                       ),
@@ -456,7 +487,7 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
                             'code': 'N/A',
                             'name': _name.text,
                             'mrp': int.parse(_mrp.text),
-                            'type': _type.text,
+                            'type': 'N/A',
                             'qty': 1,
                           });
                           reload();
@@ -466,15 +497,33 @@ class _GenerateInvoicePageState extends State<GenerateInvoicePage> {
                     ),
                     AppPrimaryButton(
                         onTap: () {
-                          invoiceItem.add({
-                            'code': 'N/A',
-                            'name': _name.text,
-                            'mrp': int.parse(_mrp.text),
-                            'type': _type.text,
-                            'qty': 1,
-                          });
-                          reload();
-                          print(invoiceItem);
+                          if (_mrp.text.isEmpty || _name.text.isEmpty) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                                    content: Text(
+                              "Please enter Item Name and MRP",
+                              style: TextStyle(fontSize: 22),
+                            )));
+                          } else {
+                            try {
+                              invoiceItem.add({
+                                'code': 'N/A',
+                                'name': _name.text,
+                                'mrp': int.parse(_mrp.text),
+                                'type': 'N/A',
+                                'qty': 1,
+                              });
+                              reload();
+                              print(invoiceItem);
+                            } catch (e) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                      content: Text(
+                                "Invalid Input",
+                                style: TextStyle(fontSize: 22),
+                              )));
+                            }
+                          }
                         },
                         text: "ADD",
                         horizontalPadding: 20)

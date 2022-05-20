@@ -15,7 +15,7 @@ const headingSecondary = TextStyle(
 
 const tableHeader = TextStyle(
   fontSize: 15,
-  fontWeight: FontWeight.w600,
+  fontWeight: FontWeight.normal,
   color: Appcolor.dark,
 );
 const tableBody = TextStyle(

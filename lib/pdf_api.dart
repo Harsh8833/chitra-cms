@@ -1,9 +1,7 @@
 import 'dart:typed_data';
-
 import 'package:chitra/models/invoice_model.dart';
 import 'package:chitra/pages/generate_invoice.dart';
 import 'package:chitra/values/colors.dart';
-import 'package:chitra/widgets/table/header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
@@ -37,7 +35,7 @@ class PrintInvoice extends StatelessWidget {
         ),
         body: PdfPreview(
           build: (format) => _generatePdf(format, title),
-          padding: const EdgeInsets.symmetric(horizontal: 100),
+          padding: const EdgeInsets.symmetric(horizontal: 200),
           initialPageFormat: PdfPageFormat.a5,
         ),
       ),
@@ -46,10 +44,16 @@ class PrintInvoice extends StatelessWidget {
 
   Future<Uint8List> _generatePdf(PdfPageFormat format, String title) async {
     final pdf = pw.Document(version: PdfVersion.pdf_1_5, compress: true);
-    final font = await PdfGoogleFonts.nunitoExtraLight();
-    final hindBold = await PdfGoogleFonts.hindSiliguriBold();
-    final poppinsLight = await PdfGoogleFonts.poppinsRegular();
-    final poppinsBold = await PdfGoogleFonts.hindBold();
+
+    final Uint8List fontData1 =
+        (await rootBundle.load('font/Poppins-Bold.ttf')).buffer.asUint8List();
+    final poppinsBold = pw.Font.ttf(fontData1.buffer.asByteData());
+
+    final Uint8List fontData =
+        (await rootBundle.load('font/Poppins-Regular.ttf'))
+            .buffer
+            .asUint8List();
+    final poppinsLight = pw.Font.ttf(fontData.buffer.asByteData());
 
     final title1 = pw.MemoryImage(
       (await rootBundle.load('assets/images/title.png')).buffer.asUint8List(),
@@ -124,24 +128,14 @@ class PrintInvoice extends StatelessWidget {
                                 pw.TextStyle(font: poppinsLight, fontSize: 6)),
                       ]),
                   pw.Divider(),
-                  pw.Row(
-                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                      children: [
-                        pw.Text('Invoice No: ' + data.invoiceNo.toString(),
-                            style:
-                                pw.TextStyle(font: poppinsLight, fontSize: 10)),
-                        pw.Text('Date: ' + data.date,
-                            style:
-                                pw.TextStyle(font: poppinsLight, fontSize: 10)),
-                      ]),
                   pw.Row(children: [
-                    pw.Text('Customer Name: ',
+                    pw.Text('Customer\'s Name: ',
                         style: pw.TextStyle(font: poppinsLight, fontSize: 10)),
                     pw.Text(data.name,
                         style: pw.TextStyle(font: poppinsLight, fontSize: 10)),
                   ]),
                   pw.Row(children: [
-                    pw.Text('Customer Phone: ',
+                    pw.Text('Customer\'s Phone: ',
                         style: pw.TextStyle(font: poppinsLight, fontSize: 10)),
                     pw.Text(data.phone,
                         style: pw.TextStyle(font: poppinsLight, fontSize: 10)),
@@ -193,6 +187,9 @@ class PrintInvoice extends StatelessWidget {
                                       font: poppinsLight, fontSize: 8)),
                             ])
                       ]),
+                  pw.Divider(),
+                  pw.Text('Thank you Visit us again',
+                      style: pw.TextStyle(font: poppinsLight, fontSize: 8))
                 ],
               ));
         },
