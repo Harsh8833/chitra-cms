@@ -1,16 +1,15 @@
-# chitra
+# Chitra-cms
 
-A new Flutter project.
+A cross-platform application that efficiently manages customer records, an inventory as well as all the invoices generated.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
+## Ui Snaps
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/90051370/169656874-c434c4c2-5f97-4ea5-b734-bd3488042de3.png">
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/90051370/169656901-53632841-afb4-48c4-be8a-08feaabce6a7.png">
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/90051370/169656915-08d8513b-7f54-4a59-af3a-876faa982efd.png">
+<img width="957" alt="image" src="https://user-images.githubusercontent.com/90051370/169656922-64e6c377-d514-4bd5-9890-cee9366978a5.png">
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+
